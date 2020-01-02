@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
     db.find()
         .then(posts => {
             console.log(posts);
-            res.status(201).json(posts);
+            res.status(200).json(posts);
         })
         .catch(err => {
             console.log(err);
@@ -44,7 +44,7 @@ router.get(`/:id`, (req, res) => {
         .then(blogPost => {
             console.log(blogPost);
             if (blogPost.length > 0) {
-                res.status(201).json(blogPost);
+                res.status(200).json(blogPost);
             } else {
                 res.status(404).json({ message: "The post with the specified ID does not exist." });
             }
@@ -55,6 +55,47 @@ router.get(`/:id`, (req, res) => {
         })
 });
 
+/*
+
+When the client makes a GET request to /api/posts/:id/comments:
+
+    If the post with the specified id is not found:
+        return HTTP status code 404 (Not Found).
+        return the following JSON object: { message: "The post with the specified ID does not exist." }.
+
+    If there's an error in retrieving the comments from the database:
+        cancel the request.
+        respond with HTTP status code 500.
+        return the following JSON object: { error: "The comments information could not be retrieved." }.
+
+*/
+
+router.get(`/:id/comments`, (req, res) => {
+    const id = req.params.id;
+    db.findById(id)
+        .then(blogPost => {
+            if (blogPost.length < 1) {
+                res.status(500).json( { message: "The post with the specified ID does not exist." })
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: "The post information could not be retrieved." });
+        })
+    db.findPostComments(id)
+        .then(comments => {
+            console.log(comments);
+            if (comments.length > 0) {
+                res.status(200).json(comments);
+            } else {
+                res.status(500).json( { message: "The post with the specified ID has no comments." });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: "The comments' information could not be retrieved." });
+        });
+});
 
 
 
