@@ -143,6 +143,69 @@ router.post('/', (req, res) => {
         });
 })
 
+/*
+When the client makes a POST request to /api/posts/:id/comments:
+
+    If the post with the specified id is not found:
+        return HTTP status code 404 (Not Found).
+        return the following JSON object: { message: "The post with the specified ID does not exist." }.
+
+    If the request body is missing the text property:
+        cancel the request.
+        respond with HTTP status code 400 (Bad Request).
+        return the following JSON response: { errorMessage: "Please provide text for the comment." }.
+
+    If the information about the comment is valid:
+        save the new comment to the database.
+        return HTTP status code 201 (Created).
+        return the newly created comment.
+
+    If there's an error while saving the comment:
+        cancel the request.
+        respond with HTTP status code 500 (Server Error).
+        return the following JSON object: { error: "There was an error while saving the comment to the database" }.
+
+*/
+
+router.post(`/:id/comments`, (req, res) => {
+    const id = req.params.id;
+    const comment = req.body;
+    if (!comment.text) {
+        res.status(400).json({ errorMessage: "Please provide text for the comment." });
+    }
+    if (!comment.post_id) {
+        res.status(400).json({ errorMessage: "Please provide the post_id."});
+    }
+    db.findById(id)
+        .then(blogPost => {
+            if (blogPost.length < 1) {
+                res.status(404).json( { message: "The post with the specified ID does not exist." })
+            } else {
+                db.insertComment(comment)
+                    .then(idObject => {
+                        console.log(idObject);
+                        db.findCommentById(idObject.id)
+                            .then(newComment => {
+                                console.log(newComment);
+                                res.status(201).json(newComment);
+                            })
+                            .catch(err => {
+                                console.log(err);
+                                res.status(500).json({ error: "There was an error while retrieving the comment from the database." })
+                            });
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        res.status(500).json({ error: "There was an error while saving the comment to the database" });
+                    });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: "There was an error while finding the post with the specified id."});
+        });
+});
+
 
 
 
