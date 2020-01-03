@@ -206,6 +206,68 @@ router.post(`/:id/comments`, (req, res) => {
         });
 });
 
+/*
+When the client makes a PUT request to /api/posts/:id:
+
+    If the post with the specified id is not found:
+        return HTTP status code 404 (Not Found).
+        return the following JSON object: { message: "The post with the specified ID does not exist." }.
+
+    If the request body is missing the title or contents property:
+        cancel the request.
+        respond with HTTP status code 400 (Bad Request).
+        return the following JSON response: { errorMessage: "Please provide title and contents for the post." }.
+
+    If there's an error when updating the post:
+        cancel the request.
+        respond with HTTP status code 500.
+        return the following JSON object: { error: "The post information could not be modified." }.
+
+    If the post is found and the new information is valid:
+        update the post document in the database using the new information sent in the request body.
+        return HTTP status code 200 (OK).
+        return the newly updated post.
+
+*/
+
+router.put(`/:id`, (req, res) => {
+    const id = req.params.id;
+    const updatedPost = req.body;
+    if (!updatedPost.title || !updatedPost.contents) {
+        res.status(400).json({ errorMessage: "Please provide title and contents for the post." });
+    }
+    db.findById(id)
+        .then(blogPost => {
+            if (blogPost.length < 1) {
+                res.status(404).json({ message: "The post with the specified ID does not exist." });
+            } else {
+                db.update(id, updatedPost)
+                    .then(updatedRecordsCount => {
+                        if (updatedRecordsCount !== 1) {
+                            res.status(500).json({ error: "The post information could not be modified." });
+                        } else {
+                            db.findById(id)
+                                .then(blogPost => {
+                                    console.log(blogPost);
+                                    res.status(201).json(blogPost);
+                                })
+                                .catch(err => {
+                                    console.log(err);
+                                    res.status(500).json({ error: "There was an error while retrieving the updated post from the database." });
+                                });
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        res.status(500).json({ error: "The post information could not be modified." });
+                    });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: "There was an error while retreiving the post with the specified id."})
+        })
+});
 
 
 
