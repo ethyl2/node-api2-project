@@ -39,6 +39,7 @@ button {
   padding: 0.5rem;
   border-radius: 20%;
   transition: all 0.2s ease-in-out; 
+  margin: 0.5rem;
 }
 
 button:hover {
