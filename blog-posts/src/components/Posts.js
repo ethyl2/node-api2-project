@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+import AddForm from './AddForm';
+
 const Posts = () => {
     const [posts, setPosts] = useState([]);
     const [commentsList, setCommentsList] = useState([]);
+    const [adding, setAdding] = useState(false);
 
     useEffect(() => {
         axios.get('http://localhost:9000/api/posts')
@@ -32,8 +35,29 @@ const Posts = () => {
             });
     }
 
+    const insertPost = newPost => {
+        console.log(newPost);
+        setAdding(!adding);
+        axios.post('http://localhost:9000/api/posts', newPost)
+            .then(res => {
+                console.log(res);
+                setPosts([...posts, res.data[0]]);
+                setAdding(!adding);
+            })
+            .catch(err => {
+                console.log(err);
+                setAdding(!adding);
+            });
+    }
+
+    const startAdd = () => {
+        setAdding(!adding);
+    }
+
     return (
         <div>
+            <button onClick={startAdd}>{!adding? 'Add Post': 'Cancel Add'}</button>
+            {adding && <AddForm insertPost={insertPost} />}
             {posts.map(post => {
                 return (
                     <div key={post.id} className='post-box'>
