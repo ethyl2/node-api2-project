@@ -51,6 +51,7 @@ router.get(`/:id`, (req, res) => {
         })
         .catch(err => {
             console.log(err);
+            //req.end(); //???
             res.status(500).json({ error: "The post information could not be retrieved." });
         })
 });
@@ -96,6 +97,51 @@ router.get(`/:id/comments`, (req, res) => {
             res.status(500).json({ error: "The comments' information could not be retrieved." });
         });
 });
+
+/*
+When the client makes a POST request to /api/posts:
+
+    If the request body is missing the title or contents property:
+        cancel the request.
+        respond with HTTP status code 400 (Bad Request).
+        return the following JSON response: { errorMessage: "Please provide title and contents for the post." }.
+
+    If the information about the post is valid:
+        save the new post the the database.
+        return HTTP status code 201 (Created).
+        return the newly created post.
+
+    If there's an error while saving the post:
+        cancel the request.
+        respond with HTTP status code 500 (Server Error).
+        return the following JSON object: { error: "There was an error while saving the post to the database" }.
+
+*/
+
+router.post('/', (req, res) => {
+    const newPost = req.body;
+    if (!newPost.title || !newPost.contents) {
+        //cancel request -- how?
+        res.status(400).json({ errorMessage: "Please provide title and contents for the post." });
+    }
+    db.insert(newPost)
+        .then(idObject => {
+            console.log(idObject);
+            db.findById(idObject.id)
+                .then(blogPost => {
+                    console.log(blogPost);
+                    res.status(201).json(blogPost);
+                })
+                .catch(err => {
+                    console.log(err);
+                    res.status(500).json({ error: "There was an error while saving the post to the database" });
+                });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: "There was an error while saving the post to the database" });
+        });
+})
 
 
 
