@@ -17,10 +17,14 @@ const Posts = () => {
     }, [])
 
     const getComments = (id) => {
+        const button = document.getElementById(`button${id}`);
+        button.classList.add('hidden');
+
         axios.get(`http://localhost:9000/api/posts/${id}/comments`)
             .then(res => {
                 console.log(res);
                 setCommentsList([...commentsList, {postId: id, comments : res.data}]);
+                
             })
             .catch(err => {
                 console.log(err);
@@ -30,18 +34,18 @@ const Posts = () => {
 
     return (
         <div>
-            <h1>Blog Posts from Hobbiton</h1>
-            
             {posts.map(post => {
                 return (
-                    <div key={post.id}>
+                    <div key={post.id} className='post-box'>
+                        
+                        <p>{post.contents}:</p>
                         <h2>{post.title}</h2>
-                        <p>{post.contents}</p>
-                        <button onClick={() => getComments(post.id)}>See Comments</button>
-                        {commentsList.filter(item => item.postId === post.id).map(item => 
-                                item.comments.map(comment => <p key={Date.now() + comment.text[0]}>{comment.text}</p>)
-                        )}
-                        <hr />
+                        <button id={`button${post.id}`} onClick={() => getComments(post.id)}>See Comments</button>
+                        <div className='comments-box'>
+                            {commentsList.filter(item => item.postId === post.id).map(item => 
+                                    item.comments.map((comment, index) => <p className='comment' key={Date.now() + comment.text[0]}>Comment {index+1}: {comment.text}</p>)
+                            )}
+                        </div>
                     </div>
             )})}
         </div>

@@ -1,13 +1,69 @@
+@import url('https://fonts.googleapis.com/css?family=Satisfy&display=swap');
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Satisfy', cursive; 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-image: url('./images/paper.jpg');
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.img-container {
+  width: 4rem;
+}
+
+img {
+  max-width: 100%;
+}
+
+header {
+  background: rgba(255, 255, 255, 0.5);
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.post-box {
+  border-bottom: 1px solid black;
+  margin-top: 1rem;
+  padding: 1rem;
+}
+
+button {
+  font-family: 'Satisfy', cursive;
+  background: black;
+  color: ivory;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 20%;
+  transition: all 0.2s ease-in-out; 
+}
+
+button:hover {
+  transform: scale(1.2);
+}
+
+button:active {
+  transform: translateY(10px);
+}
+
+.hidden {
+  display: none;
+}
+
+.comment {
+  background: rgba(0, 0, 0, 0.5);;
+  color: ivory;
+  width: 75%;
+  margin: 1rem auto;
+  padding: 1rem;
+  border-radius: 2px;
+}
+
+footer {
+  background: rgba(255, 255, 255, 0.5);
+  margin: none;
+  padding: 1rem;
 }
