@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import AddForm from './AddForm';
 import AddCommentForm from './AddCommentForm';
+import EditForm from './EditForm';
 
 const Posts = () => {
     const [posts, setPosts] = useState([]);
@@ -12,6 +13,9 @@ const Posts = () => {
 
     const [addingComment, setAddingComment] = useState(false);
     const [postToAddComment, setPostToAddComment] = useState();
+
+    const [editing, setEditing] = useState(false);
+    const [postToEdit, setPostToEdit] = useState();
 
     useEffect(() => {
         axios.get('http://localhost:9000/api/posts')
@@ -84,6 +88,47 @@ const Posts = () => {
         form.classList.toggle('hidden');
     }
 
+    const deletePost = postId => {
+        axios.delete(`http://localhost:9000/api/posts/${postId}`)
+            .then(res => {
+                console.log(res);
+                setPosts(posts.filter(post => post.id !== postId));
+            })
+            .catch((err)=>{
+                console.log(err);
+            });
+    };
+
+    const startEdit = postId => {
+        setEditing(!editing);
+        const form = document.getElementById(`edit${postId}`);
+        form.classList.toggle('hidden');
+        setPostToEdit(postId);
+    }
+
+    const editPost = post => {
+        console.log(post);
+        setEditing(false);
+        axios.put(`http://localhost:9000/api/posts/${postToEdit}`, post)
+            .then(res => {
+                console.log(res);
+                const form = document.getElementById(`edit${postToEdit}`);
+                form.classList.toggle('hidden');
+                setPosts(posts.map(post => {
+                    if (post.id === postToEdit) {
+                        return res.data[0];
+                    } else {
+                        return post;
+                    }
+                }));
+            })
+            .catch(err => {
+                console.log(err);
+                const form = document.getElementById(`edit${postToEdit}`);
+                form.classList.toggle('hidden');
+            });
+    }
+
     return (
         <div>
             <button onClick={startAdd}>{!adding? 'Add Post': 'Cancel Add'}</button>
@@ -104,6 +149,12 @@ const Posts = () => {
                         <div id={`comments${post.id}`} className='hidden'>
                             <AddCommentForm insertComment={insertComment} />
                         </div>
+                        <div id={`edit${post.id}`} className='hidden'>
+                            <EditForm post={post} editPost={editPost} />
+                        </div>
+
+                        <button onClick={() => startEdit(post.id)}>{!editing? 'Edit Post': 'Cancel Edit'}</button>
+                        <button onClick={() => deletePost(post.id)}>Delete Post</button>
                         </div>
                     </div>
             )})}
