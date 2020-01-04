@@ -19,7 +19,7 @@ const AddForm = props => {
                 <label htmlFor='title'>Title: </label>
                 <input type='text' name='title' id='title' value={blogPost.title} onChange={handleChange} /> 
                 <br />
-                <label htmlFor='contents'>Contents</label>
+                <label htmlFor='contents'>Contents:</label>
                 <input type='text' name='contents' id='contents' value={blogPost.contents} onChange={handleChange} />
                 <br />
                 <button type='submit'>Submit Post</button>
