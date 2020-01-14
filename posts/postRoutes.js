@@ -310,6 +310,8 @@ router.delete(`/:id`, (req, res) => {
         });
 });
 
+/* New routes for CRUD for comments */
+
 router.get('/comments/:id', (req, res) => {
     const id = req.params.id;
     db.findCommentById(id)
@@ -333,6 +335,22 @@ router.delete('/comments/:id', validateCommentId, (req, res) => {
         .catch(err => {
             console.log(err);
             res.status(500).json({error: "The comment could not be removed"});
+        });
+});
+
+router.put('/comments/:id', validateCommentId, (req, res) => {
+    /*
+    body looks like this: {"id": 40, "text": "blah", "post_id": 18}
+    */
+    const id = req.params.id;
+    db.editComment(id, req.body)
+        .then(response => {
+            console.log(response);
+            res.status(201).json(response);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({error: err, message: "Unable to update comment"});
         });
 });
 

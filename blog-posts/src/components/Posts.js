@@ -4,6 +4,7 @@ import axios from 'axios';
 import AddForm from './AddForm';
 import AddCommentForm from './AddCommentForm';
 import EditForm from './EditForm';
+import EditCommentForm from './EditCommentForm';
 
 const Posts = () => {
     const [posts, setPosts] = useState([]);
@@ -16,6 +17,9 @@ const Posts = () => {
 
     const [editing, setEditing] = useState(false);
     const [postToEdit, setPostToEdit] = useState();
+
+    const [isEditingComment, setIsEditingComment] = useState(false);
+    const [commentToEditId, setCommentToEditId] = useState();
 
     useEffect(() => {
         axios.get('http://localhost:9000/api/posts')
@@ -127,6 +131,7 @@ const Posts = () => {
                 const form = document.getElementById(`edit${postToEdit}`);
                 form.classList.toggle('hidden');
             });
+        setPostToEdit(null);
     };
 
     const deleteComment = (commentId, postId) => {
@@ -142,10 +147,38 @@ const Posts = () => {
             });
     }
 
+    const startEditComment = (postId, comment) => {
+        console.log("Time to edit comment ", comment.id);
+        setIsEditingComment(!isEditingComment);
+        const editFormEl = document.getElementById('editForm');
+        console.log(editFormEl);
+        editFormEl.classList.toggle('hidden');
+        const commentsDivEl = document.getElementById(`outer-comment${comment.id}`);
+        commentsDivEl.prepend(editFormEl);
+        setPostToEdit(postId); 
+        setCommentToEditId(comment.id); 
+    }
+
+    const editComment = comment => {
+        console.log('Time to edit comment with ', commentToEditId, comment.text, postToEdit);
+        const body = {"id": commentToEditId,
+                        "text": comment.text,
+                        "post_id": postToEdit}
+        axios.put(`http://localhost:9000/api/posts/comments/${commentToEditId}`, body)
+            .then(response => {
+                console.log(response);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
     return (
         <div>
             <button onClick={startAdd}>{!adding? 'Add Post': 'Cancel Add'}</button>
             {adding && <AddForm insertPost={insertPost} />}
+            <div id='editForm' className='hidden'><EditCommentForm editComment={editComment}/></div>
+
             {posts.map(post => {
                 return (
                     <div key={post.id} className='post-box'>
@@ -155,14 +188,17 @@ const Posts = () => {
                         <button id={`button${post.id}`} onClick={() => getComments(post.id)}>See Comments</button>
                         {!addingComment && <button onClick={() => startAddComment(post.id)}>Add Comment</button>}
 
-                        <div className='comments-box'>
+                        <div className='comments-box' id={`comments-box${post.id}`}>
                             {commentsList.filter(item => item.postId === post.id).map(item => 
                                     item.comments.map((comment, index) => {
                                         console.log(comment.id, comment.text);
                                         return (
-                                            <div key={`comment${comment.id}`} className='comment-box' id={`comment${comment.id}`}>
-                                                <p className='comment' key={Date.now() + comment.text}>Comment {index+1}: {comment.text}</p>
-                                                <button onClick={ () => deleteComment(comment.id, post.id)}>Delete Comment</button>
+                                            <div key={`comment${comment.id}`} id={`outer-comment${comment.id}`}>
+                                                <div className='comment-box' id={`comment${comment.id}`}>
+                                                    <p className='comment' key={Date.now() + comment.text}>Comment {index+1}: {comment.text}</p>
+                                                    <button onClick={() => startEditComment(post.id, comment)}>Edit Comment</button>
+                                                    <button onClick={ () => deleteComment(comment.id, post.id)}>Delete Comment</button>    
+                                                </div>
                                             </div>
                                     )})
                             )}
