@@ -36,8 +36,8 @@ button {
   background: black;
   color: ivory;
   border: none;
-  padding: 0.5rem;
-  border-radius: 20%;
+  padding: 0.75rem;
+  border-radius: 50%;
   transition: all 0.2s ease-in-out; 
   margin: 0.5rem;
   outline: none;
