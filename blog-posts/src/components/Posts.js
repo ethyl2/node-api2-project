@@ -177,6 +177,11 @@ const Posts = () => {
         const editFormEl = document.getElementById('editForm');
         editFormEl.classList.toggle('hidden');
         setPostToEdit(null);
+        
+        const commentPEl = document.getElementById(`commentP${commentToEditId}`);
+        commentPEl.textContent = comment.text;
+
+        setCommentToEditText('');
         setCommentToEditId(null);
     }
 
@@ -202,7 +207,7 @@ const Posts = () => {
                                         return (
                                             <div key={`comment${comment.id}`} id={`outer-comment${comment.id}`}>
                                                 <div className='comment-box' id={`comment${comment.id}`}>
-                                                    <p className='comment' key={Date.now() + comment.text}>Comment {index+1}: {comment.text}</p>
+                                                    <p className='comment' id={`commentP${comment.id}`}>{comment.text}</p>
                                                     <button onClick={() => startEditComment(post.id, comment)}>Edit Comment</button>
                                                     <button onClick={ () => deleteComment(comment.id, post.id)}>Delete Comment</button>    
                                                 </div>
