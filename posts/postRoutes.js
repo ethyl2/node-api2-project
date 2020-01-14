@@ -120,7 +120,6 @@ When the client makes a POST request to /api/posts:
 router.post('/', (req, res) => {
     const newPost = req.body;
     if (!newPost.title || !newPost.contents) {
-        //cancel request -- how?
         res.status(400).json({ errorMessage: "Please provide title and contents for the post." });
     }
     db.insert(newPost)
@@ -308,6 +307,19 @@ router.delete(`/:id`, (req, res) => {
         .catch(err => {
             console.log(err);
             res.status(500).json({ message: "There was a error while retrieving the post with the specified ID."})
+        });
+});
+
+router.get('/comments/:id', (req, res) => {
+    const id = req.params.id;
+    db.findCommentById(id)
+        .then(response => {
+            console.log(response);
+            res.status(200).json(response);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({error: "The comment could not be retrieved."})
         });
 });
 
