@@ -323,6 +323,19 @@ router.get('/comments/:id', (req, res) => {
         });
 });
 
+router.delete('/comments/:id', (req, res) => {
+    const id = req.params.id;
+    db.deleteComment(id)
+        .then(response => {
+            console.log(response);
+            res.status(200).json({numRecordsDeleted: response})
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({error: "The comment could not be removed"});
+        });
+})
+
 
 
 
