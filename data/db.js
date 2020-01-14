@@ -69,7 +69,7 @@ function editComment(id, comment) {
     .update(comment);
 }
 
-// This is my function. Not sure yet if it works.
+// This is my function. Hopefully it works.
 function deleteComment(id) {
   return db('comments')
     .join('posts', 'posts.id', 'post_id')

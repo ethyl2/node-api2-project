@@ -127,6 +127,19 @@ const Posts = () => {
                 const form = document.getElementById(`edit${postToEdit}`);
                 form.classList.toggle('hidden');
             });
+    };
+
+    const deleteComment = (commentId, postId) => {
+        console.log(commentId, postId);
+        axios.delete(`http://localhost:9000/api/posts/comments/${commentId}`)
+            .then(response => {
+                console.log(response);
+                const commentEl = document.getElementById(`comment${commentId}`);
+                commentEl.style.display = 'none';
+            })
+            .catch(err => {
+                console.log(err);
+            });
     }
 
     return (
@@ -144,7 +157,14 @@ const Posts = () => {
 
                         <div className='comments-box'>
                             {commentsList.filter(item => item.postId === post.id).map(item => 
-                                    item.comments.map((comment, index) => <p className='comment' key={Date.now() + comment.text}>Comment {index+1}: {comment.text}</p>)
+                                    item.comments.map((comment, index) => {
+                                        console.log(comment.id, comment.text);
+                                        return (
+                                            <div key={`comment${comment.id}`} className='comment-box' id={`comment${comment.id}`}>
+                                                <p className='comment' key={Date.now() + comment.text}>Comment {index+1}: {comment.text}</p>
+                                                <button onClick={ () => deleteComment(comment.id, post.id)}>Delete Comment</button>
+                                            </div>
+                                    )})
                             )}
                         <div id={`comments${post.id}`} className='hidden'>
                             <AddCommentForm insertComment={insertComment} />

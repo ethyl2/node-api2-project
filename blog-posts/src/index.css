@@ -63,6 +63,12 @@ button:active {
   border-radius: 2px;
 }
 
+.comment-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 form {
   width: 50%;
   margin: 1rem auto;
