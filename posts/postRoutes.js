@@ -323,7 +323,7 @@ router.get('/comments/:id', (req, res) => {
         });
 });
 
-router.delete('/comments/:id', (req, res) => {
+router.delete('/comments/:id', validateCommentId, (req, res) => {
     const id = req.params.id;
     db.deleteComment(id)
         .then(response => {
@@ -334,7 +334,18 @@ router.delete('/comments/:id', (req, res) => {
             console.log(err);
             res.status(500).json({error: "The comment could not be removed"});
         });
-})
+});
+
+function validateCommentId(req, res, next) {
+    const id = req.params.id;
+    db.findCommentById(id)
+        .then(response => {
+            next();
+        })
+        .catch(err => {
+            res.status(500).json({error: err, message: `A comment with id of ${id} could not be retrieved.`});
+        });
+};
 
 
 
