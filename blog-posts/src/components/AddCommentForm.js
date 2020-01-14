@@ -10,6 +10,7 @@ const AddCommentForm = props => {
     const addComment = e => {
         e.preventDefault();
         props.insertComment(comment);
+        setComment({text: ''});
     }
 
     return (
@@ -17,7 +18,7 @@ const AddCommentForm = props => {
             <form onSubmit={addComment}>
                 <legend>Add Comment</legend>
                 <label htmlFor='text'>Text: </label>
-                <input type='text' name='text' id='text' value={comment.title} onChange={handleChange} /> 
+                <input type='text' name='text' id='text' value={comment.text} onChange={handleChange} /> 
                 <br />
                 <button type='submit'>Submit Comment</button>
             </form>
