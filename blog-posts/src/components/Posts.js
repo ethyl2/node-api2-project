@@ -20,6 +20,7 @@ const Posts = () => {
 
     const [isEditingComment, setIsEditingComment] = useState(false);
     const [commentToEditId, setCommentToEditId] = useState();
+    const [commentToEditText, setCommentToEditText] = useState('');
 
     useEffect(() => {
         axios.get('http://localhost:9000/api/posts')
@@ -148,15 +149,17 @@ const Posts = () => {
     }
 
     const startEditComment = (postId, comment) => {
-        console.log("Time to edit comment ", comment.id);
+        setCommentToEditText(comment.text);
+        //console.log("Time to edit comment ", comment.id);
+        //console.log(comment.text);
         setIsEditingComment(!isEditingComment);
         const editFormEl = document.getElementById('editForm');
-        console.log(editFormEl);
         editFormEl.classList.toggle('hidden');
         const commentsDivEl = document.getElementById(`outer-comment${comment.id}`);
         commentsDivEl.prepend(editFormEl);
         setPostToEdit(postId); 
         setCommentToEditId(comment.id); 
+        
     }
 
     const editComment = comment => {
@@ -171,13 +174,17 @@ const Posts = () => {
             .catch(err => {
                 console.log(err);
             });
+        const editFormEl = document.getElementById('editForm');
+        editFormEl.classList.toggle('hidden');
+        setPostToEdit(null);
+        setCommentToEditId(null);
     }
 
     return (
         <div>
             <button onClick={startAdd}>{!adding? 'Add Post': 'Cancel Add'}</button>
             {adding && <AddForm insertPost={insertPost} />}
-            <div id='editForm' className='hidden'><EditCommentForm editComment={editComment}/></div>
+            <div id='editForm' className='hidden'><EditCommentForm editComment={editComment} text={commentToEditText}/></div>
 
             {posts.map(post => {
                 return (
@@ -189,7 +196,7 @@ const Posts = () => {
                         {!addingComment && <button onClick={() => startAddComment(post.id)}>Add Comment</button>}
 
                         <div className='comments-box' id={`comments-box${post.id}`}>
-                            {commentsList.filter(item => item.postId === post.id).map(item => 
+                            {commentsList && commentsList.filter(item => item.postId === post.id).map(item => 
                                     item.comments.map((comment, index) => {
                                         console.log(comment.id, comment.text);
                                         return (

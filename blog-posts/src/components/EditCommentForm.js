@@ -1,7 +1,12 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 
 const EditCommentForm = props => {
+    
     const [editedComment, setEditedComment] = useState({text: ''});
+
+    useEffect(() => {
+        setEditedComment({text: props.text})
+    }, [props.text]);
 
     const handleChange = e => {
         setEditedComment({[e.target.name] : e.target.value});
@@ -14,6 +19,8 @@ const EditCommentForm = props => {
     }
 
     return (
+        <div>
+        {editedComment && 
         <form onSubmit={handleSubmit}>
             <legend>Edit Comment</legend>
             <label htmlFor='text'>Comment: </label>
@@ -24,6 +31,8 @@ const EditCommentForm = props => {
                 onChange={handleChange}/>
             <button type='submit'>Submit Edit</button>
         </form>
+        }
+        </div>
     )
 }
 
