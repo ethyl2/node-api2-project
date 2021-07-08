@@ -11,6 +11,8 @@ module.exports = {
   findPostComments,
   findCommentById,
   insertComment,
+  editComment,
+  deleteComment
 };
 
 function find() {
@@ -57,4 +59,21 @@ function insertComment(comment) {
   return db('comments')
     .insert(comment)
     .then(ids => ({ id: ids[0] }));
+}
+// This is my function. Not sure yet if it works.
+function editComment(id, comment) {
+  return db('comments')
+    .join('posts', 'posts.id', 'post_id')
+    .select('comments.*', 'title as post')
+    .where('comments.id', id)
+    .update(comment);
+}
+
+// This is my function. Hopefully it works.
+function deleteComment(id) {
+  return db('comments')
+    .join('posts', 'posts.id', 'post_id')
+    .select('comments.*', 'title as post')
+    .where('comments.id', id)
+    .del();
 }

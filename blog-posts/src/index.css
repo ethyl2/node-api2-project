@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css?family=Satisfy&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Satisfy', cursive; 
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-image: url('./images/paper.jpg');
+}
+
+.img-container {
+  width: 4rem;
+}
+
+img {
+  max-width: 100%;
+}
+
+header {
+  background: rgba(255, 255, 255, 0.5);
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.post-box {
+  border-bottom: 1px solid black;
+  margin-top: 1rem;
+  padding: 1rem;
+}
+
+button {
+  font-family: 'Satisfy', cursive;
+  background: black;
+  color: ivory;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 50%;
+  transition: all 0.2s ease-in-out; 
+  margin: 0.5rem;
+  outline: none;
+}
+
+button:hover {
+  transform: scale(1.2);
+}
+
+button:active {
+  transform: translateY(10px);
+}
+
+.hidden {
+  display: none;
+}
+
+.comment {
+  background: rgba(0, 0, 0, 0.5);;
+  color: ivory;
+  width: 75%;
+  margin: 1rem auto;
+  padding: 1rem;
+  border-radius: 2px;
+}
+
+.comment-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+form {
+  width: 50%;
+  margin: 1rem auto;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+input {
+  width: 80%;
+  line-height: 1.5rem;
+  border: none;
+  background: rgb(239,224,205);
+  font-family: 'Satisfy', cursive; 
+  font-size: 1.2rem;
+  padding: 0.5rem;
+  border-radius: 3px;
+}
+
+legend {
+  font-size: 1.5rem;
+  padding-top: 0.5rem;
+}
+
+
+
+footer {
+  background: rgba(255, 255, 255, 0.5);
+  margin: none;
+  padding: 1rem;
+}
